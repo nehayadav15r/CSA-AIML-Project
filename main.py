@@ -16,18 +16,16 @@ pygame.display.set_caption("🧭 Pathfinding Visualizer")
 clock = pygame.time.Clock()
 
 # ── Colors ──────────────────────────────────────────────────────────────────
-WHITE      = (245, 245, 250)
-BLACK      = (30,  30,  40)
-GREY       = (180, 180, 195)
-DARK_GREY  = (100, 100, 115)
-GREEN      = (72,  199, 116)   # start
-RED        = (255, 82,  82)    # end
-BLUE       = (66,  133, 244)   # final path
-ORANGE     = (255, 183, 77)    # visited / frontier
-PURPLE     = (171, 71,  188)   # wall
-BG         = (20,  20,  30)    # window background
-PANEL_BG   = (35,  35,  50)
+WHITE   = (255, 255, 255)
+BLACK   = (0,   0,   0)
+GREY    = (128, 128, 128)
+GREEN   = (0,   255, 0)
+RED     = (255, 0,   0)
+BLUE    = (0,   0,   255)
+ORANGE  = (255, 165, 0)
+PANEL_BG   = (40,  40,  40)
 HIGHLIGHT  = (255, 220, 50)
+DARK_GREY  = (100, 100, 100)
 
 
 # ── Node ─────────────────────────────────────────────────────────────────────
@@ -44,21 +42,20 @@ class Node:
     def get_pos(self):
         return self.row, self.col
 
-    def is_wall(self):   return self.color == PURPLE
+    def is_wall(self):   return self.color == BLACK
     def is_start(self):  return self.color == GREEN
     def is_end(self):    return self.color == RED
 
     def make_start(self):   self.color = GREEN
     def make_end(self):     self.color = RED
-    def make_wall(self):    self.color = PURPLE
+    def make_wall(self):    self.color = BLACK
     def make_visited(self): self.color = ORANGE
     def make_path(self):    self.color = BLUE
     def reset(self):        self.color = WHITE
 
     def draw(self, win):
         pygame.draw.rect(win, self.color,
-                         (self.x + 1, self.y + 1, self.gap - 1, self.gap - 1),
-                         border_radius=2)
+                         (self.x, self.y, self.gap, self.gap))
 
     def update_neighbors(self, grid):
         self.neighbors = []
@@ -99,7 +96,7 @@ FONT_MD = pygame.font.SysFont("consolas", 17, bold=True)
 FONT_LG = pygame.font.SysFont("consolas", 20, bold=True)
 
 ALGO_NAMES = {pygame.K_b: "BFS", pygame.K_d: "DFS", pygame.K_a: "A*"}
-ALGO_COLORS = {"BFS": (66, 200, 230), "DFS": (230, 120, 66), "A*": (120, 230, 66)}
+ALGO_COLORS = {"BFS": BLUE, "DFS": ORANGE, "A*": GREEN}
 
 def draw_hud(win, width, algo, status, step_count):
     # top bar
@@ -127,10 +124,10 @@ HUD_BOTTOM = 22   # pixels reserved at bottom
 
 
 def full_draw(win, grid, rows, width, algo, status, step_count):
-    win.fill(BG)
+    win.fill(WHITE)
     # offset grid drawing downward by HUD_TOP
     surf = pygame.Surface((width, width))
-    surf.fill(BG)
+    surf.fill(WHITE)
     for row in grid:
         for node in row:
             node.draw(surf)
